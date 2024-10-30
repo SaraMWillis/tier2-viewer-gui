@@ -1,0 +1,180 @@
+/* Define Color Variables */
+:root {
+    --blue: #007bff;
+    --indigo: #6610f2;
+    --purple: #6f42c1;
+    --pink: #e83e8c;
+    --red: #dc3545;
+    --orange: #fd7e14;
+    --yellow: #ffc107;
+    --green: #28a745;
+    --teal: #20c997;
+    --cyan: #17a2b8;
+    --white: #fff;
+    --gray: #6c757d;
+    --gray-dark: #343a40;
+    --primary: #007bff;
+    --secondary: #6c757d;
+    --success: #28a745;
+    --info: #17a2b8;
+    --warning: #ffc107;
+    --danger: #dc3545;
+    --light: #f8f9fa;
+    --dark: #343a40;
+    --font-family-sans-serif: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif;
+}
+
+/*body {
+    margin: 5rem;
+    font-family: var(--font-family-sans-serif);
+    font-size: 1rem;
+    font-weight: 400;
+    line-height: 1.5;
+    color: #212529;
+    text-align: left;
+    background-color: #fff;
+}*/
+html, body {
+    margin: 0; /* Remove default margin */
+    padding: 0; /* Remove default padding */
+    width: 100%; /* Full width */
+}
+
+/* Box Sizing */
+*, ::after, ::before {
+    box-sizing: border-box;
+}
+
+/* Basic HTML Styles */
+html {
+    font-family: sans-serif;
+    line-height: 1.15;
+    -webkit-text-size-adjust: 100%;
+    -webkit-tap-highlight-color: transparent;
+}
+
+/* Headings */
+h1, h2, h3, h4, h5, h6 {
+    margin-top: 0;
+    margin-bottom: .5rem;
+}
+
+/* Paragraphs */
+p {
+    margin-top: 0;
+    margin-bottom: 1rem;
+}
+
+/* Links */
+a {
+    color: #AB0520;
+    text-decoration: none;
+}
+
+a:hover {
+    color: #8B0015;
+    text-decoration: underline;
+}
+
+/* Buttons */
+btn {
+    border-radius: 0;
+    border: 1px solid transparent;
+    padding: .375rem .75rem;
+    cursor: pointer;
+    background-color: #F4EDE5;
+}
+
+nav {
+    display: flex; /* Use flexbox for layout */
+    justify-content: space-around; /* Space buttons evenly */
+}
+
+a.button {
+    border-radius: 1px;
+    border: 1px solid transparent;
+    border-radius: 3px;
+    background-color: #AB0520;
+    color: white;
+    text-decoration: none;
+    padding: 10px; /* Uniform padding */
+    flex: 1; /* Allow buttons to grow equally */
+    margin: 0 3px; /* Optional: spacing between buttons */
+    text-align: center; /* Center the text */
+}
+
+a.button:focus {
+    outline: 1px dotted;
+    background-color: #8B0015;
+}
+
+a.button:hover {
+    background-color: #8B0015;
+
+}
+
+a.button.active {
+    background-color: #8B0015;
+    color: #E2E9EB; 
+    cursor: default; /* Indicates it's selected */
+    pointer-events: none; /* Disable clicking */
+}
+
+
+/* Form Elements */
+input, select, textarea {
+    margin: 0;
+    font-family: inherit;
+    font-size: inherit;
+    line-height: inherit;
+}
+
+/* Misc Styles */
+img {
+    vertical-align: middle;
+    border-style: none;
+}
+
+table {
+    border-collapse: collapse;
+}
+
+/* Add more specific styles as needed */
+
+
+.scroll-box {
+    width: 100%;            /* Set width */
+    max-height: 50vh;
+    overflow-x: auto;        /* Enable horizontal scrolling */
+    white-space: nowrap;     /* Prevent text from wrapping */
+    border: 1px solid #ccc;  /* Optional: add a border */
+    padding: 10px;           /* Optional: add some padding */
+}
+
+.header {
+    background-color: #F4EDE5; /* Use the blue variable */
+    color: black; /* Text color */
+    padding-top: 10px;
+    padding-bottom: 0;
+    padding-right: 60px;
+    padding-left: 60px;
+    width: 100%; /* Full width */
+}
+
+.container {
+    margin-top: 20px; /* Adds space above the container */
+    padding: 20px; /* Adds space inside the container */
+}
+
+
+.even-row {
+    background-color: #E2E9EB; /* Light gray */
+}
+
+.odd-row {
+    background-color: #ffffff; /* White */
+}
+
+.spacer {
+    height: 100px; /* Adjust height as needed */
+}

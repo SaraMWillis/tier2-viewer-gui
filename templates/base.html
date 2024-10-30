@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tier 2 Viewer</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='stylesheets/layout.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='stylesheets/buttons.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='stylesheets/status_bars.css') }}">
+</head>
+<body>
+  
+  <div class="header">
+    <div class="container">
+    <!--<div class="container">-->
+        
+        <h1 class="mt-4">Tier 2 Viewer</h1>
+        {% with messages = get_flashed_messages() %}
+          {% if messages %}
+            <div class="alert alert-success mt-3">
+              {{ messages[0] }}
+            </div>
+          {% endif %}
+        {% endwith %}
+        <nav class="mt-4">
+            <a class="button {{ 'active' if request.endpoint == 'index' else '' }}" href="{{ url_for('index') }}">Home</a>
+            <a class="button {{ 'active' if request.endpoint == 'configure_credentials' else '' }}" href="{{ url_for('configure_credentials') }}">Credentials</a>
+            <a class="button {{ 'active' if request.endpoint == 'list_objects' else '' }}" href="{{ url_for('list_objects') }}">Bucket Contents</a>
+            <!--<a class="button {{ 'active' if request.endpoint == 'restore_objects' else '' }}" href="{{ url_for('restore_objects') }}">Restore Objects</a>-->
+        </nav>
+        
+        </div> 
+        </div>       
+        <div class="mt-4">
+            {% block content %}{% endblock %}
+        </div>
+        
+    <!--</div>-->
+</body>
+</html>
+

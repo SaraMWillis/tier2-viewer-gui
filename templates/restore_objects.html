@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <div class="container">
+    <h2>Restore Archived Objects</h2>
+    <form method="POST">
+        <div class="form-group">
+            <label for="object_name">Object Name</label>
+            <input type="text" class="form-control" id="object_name" name="object_name" required>
+        </div>
+        <button type="submit" class="btn btn-warning">Restore Object</button>
+    </form>
+    </div>
+{% endblock %}
+

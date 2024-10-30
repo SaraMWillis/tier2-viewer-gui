@@ -1,0 +1,246 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<head>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+
+<style>
+    .table tbody tr {
+    cursor: pointer; /* Change cursor to hand on hover */
+}
+.highlight-row {
+    background-color: #D0E6F9; /* Light blue background for highlight */
+}
+
+.input-group {
+    position: relative;
+}
+
+#up-directory-icon {
+    position: absolute;
+    top: 50%;
+    right: 1px; /* Adjust as needed */
+    transform: translateY(-50%); /* Center the icon vertically */
+    pointer-events: auto; /* Make sure the icon can be clicked */
+    opacity: 1; /* Default state */
+    display: flex; /* Flexbox for centering */
+    align-items: center; /* Center items vertically */
+}
+
+#up-directory-icon[disabled] {
+    opacity: 0.5; /* Disabled state */
+    pointer-events: none; /* Disable click events */
+}
+</style>
+
+
+<div class="container">
+<!--
+<h2>Bucket Size</h2>
+<form method="POST"  action="{{ url_for('bucket_size') }}">
+    <div class="form-group">
+        <button type="submit" class="btn btn-primary">Check Now</button>
+    </div>
+</form>
+
+<hr style="padding-top: 20px; padding-bottom: 20px;">
+-->
+
+
+
+<h2>Bucket Contents</h2>
+<div id="status-message" class="alert {{ alert_type }}" style="display: {% if status_message %}block{% else %}none{% endif %};">
+    {{ status_message }}
+</div>
+
+<!-- Loading Message -->
+<div id="loading-message" style="display: none;">
+    <p>Loading... <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span></p>
+</div>
+
+<form method="POST" action="{{ url_for('list_objects') }}" id="list-form">
+    <div class="form-group row">
+        <div class="col-sm-2">
+            <button type="submit" class="btn btn-primary" id="list-button">List Contents</button>
+
+
+        </div>
+        <div class="col-sm-8">
+            <div class="input-group mb-3">
+
+                </span>
+                <input type="text" class="form-control" id="path" name="path" placeholder="Enter path (optional)" value="{{ request.form['path'] }}">
+                <span id="up-directory-icon" title="Up One Directory" style="cursor: pointer; width: 24px; height: 24px; margin-left: -35px; z-index: 1;">
+                    <i class="fas fa-arrow-turn-up" style="font-size: 18px;"></i>
+                </span>
+            </div>
+            
+        </div>
+
+    </div>
+    
+    <div class="form-group row">
+        <div class="col-sm-4">
+            <label>
+                <input type="checkbox" id="request_object_tier" name="request_object_tier" onclick="toggleCheckbox(this) {% if request_object_tier %}checked{% endif %}"> Request object tier (takes longer)
+            </label>            
+        </div>
+        <div class="col-sm-4">
+            <label>
+                <input type="checkbox" id="request_sizes" name="request_sizes"> Request object size 
+            </label>
+        </div>
+    </div>
+</form>
+
+{% if tier %}
+<div class="scroll-box">
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Object</th>
+                <th>Storage Class</th>
+                <th>Archive Status</th>
+                <th>Restore Status</th>
+                <th style="text-align: right; padding-right: 10px;">Size</th>
+                
+            </tr>
+        </thead>
+        <tbody>
+            {% for content in contents %}
+            <tr class="{{ 'even-row' if loop.index % 2 == 0 else 'odd-row' }}" 
+                onclick="handleRowClick('{{ content|escape }}', event)" 
+                ondblclick="handleRowDoubleClick('{{ objects[content]['true path']|escape }}')">                        
+                <td>{{ content }}</td>
+                <td>{{ objects[content]['storage class'] }}</td>
+                <td>{{ objects[content]['archive status'] }}</td>
+                <td>{{ objects[content]['restore status'] }}</td>
+                <td style="text-align: right; padding-right: 10px;">{{ objects[content]['size'] }}</td>
+                
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+{% else %}
+    <div class="scroll-box">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Object</th>
+                    <th style="text-align: right; padding-right: 50px;">Size</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for content in contents %}
+                <tr class="{{ 'even-row' if loop.index % 2 == 0 else 'odd-row' }}" 
+                    onclick="handleRowClick('{{ content|escape }}', event)" 
+                    ondblclick="handleRowDoubleClick('{{ objects[content]['true path']|escape }}')">                        
+                    <td>{{ content }}</td>
+                    <td style="text-align: right; padding-right: 50px;">{{ objects[content]['size'] }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endif %}
+
+
+<script>
+    function handleRowClick(data, event) {
+        const rows = document.querySelectorAll('tbody tr');
+        rows.forEach(row => {
+            row.classList.remove('highlight-row');
+        });
+        event.currentTarget.classList.add('highlight-row');
+    }
+
+    function handleRowDoubleClick(data) {
+        // Set the path input value to the double-clicked content
+        document.getElementById('path').value = data;
+
+        // Show loading message
+        document.getElementById('loading-message').style.display = 'block';
+
+        // Submit the form
+        const form = document.querySelector('form');
+        form.submit();
+    }
+
+    function toggleCheckbox(checkbox) {
+        // If the checkbox is checked, set a data attribute to keep it checked
+        if (checkbox.checked) {
+            checkbox.dataset.checked = 'true';
+        } else {
+            delete checkbox.dataset.checked;
+        }
+    }
+
+    // Add event listener to the form to handle submission
+    document.getElementById('list-form').addEventListener('submit', function(event) {
+        // Keep the checkbox checked by setting its state based on the data attribute
+        const checkbox = document.getElementById('request_object_tier');
+        if (checkbox.dataset.checked === 'true') {
+            checkbox.checked = true; // Keep checked
+        } else {
+            checkbox.checked = false; // Uncheck if it was not checked
+        }
+
+        // Show loading message
+        document.getElementById('loading-message').style.display = 'block';
+    });
+
+    const upDirectoryIcon = document.getElementById('up-directory-icon');
+
+    upDirectoryIcon.addEventListener('click', function() {
+        let currentPath = document.getElementById('path').value;
+        let pathSegments = currentPath.split('/');
+
+        if (pathSegments.length > 1 || (pathSegments.length === 1 && pathSegments[0] !== '')) {
+            pathSegments.pop(); // Remove the last segment
+            let newPath = pathSegments.join('/');
+
+            // Update the path input with the new path
+            document.getElementById('path').value = newPath;
+
+            // Show loading message
+            document.getElementById('loading-message').style.display = 'block';
+
+            // Submit the form
+            document.getElementById('list-form').submit();
+        }
+    });
+
+    // Function to check if the path is at the base directory
+    function updateUpDirectoryIconState() {
+        const currentPath = document.getElementById('path').value;
+
+        // Disable the icon if the path is empty or just a base directory
+        if (currentPath === '' || currentPath === '/') {
+            upDirectoryIcon.style.opacity = '0.5'; // Change opacity to indicate disabled state
+            upDirectoryIcon.style.pointerEvents = 'none'; // Disable click events
+        } else {
+            upDirectoryIcon.style.opacity = '1'; // Normal opacity
+            upDirectoryIcon.style.pointerEvents = 'auto'; // Enable click events
+        }
+    }
+
+    // Call this function on page load to set the initial state
+    updateUpDirectoryIconState();
+
+    // Call this function after the path input changes
+    document.getElementById('path').addEventListener('input', updateUpDirectoryIconState);
+</script>
+
+
+
+<div class="spacer"></div>
+
+
+
+{% endblock %}
+
+
